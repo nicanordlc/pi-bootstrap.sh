@@ -1,0 +1,20 @@
+version: '3'
+services:
+  gptwol:
+    container_name: gptwol
+    image: 'misterbabou/gptwol:latest'
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - PORT=5000
+      - TZ=America/Santo_Domingo
+    volumes:
+      - './appdata/cron:/etc/cron.d'
+      - './computers.txt:/app/computers.txt'
+    labels:
+      - traefik.enable=true
+      - 'traefik.http.routers.http-0-wol.rule=Host(`wol.10.0.0.37.sslip.io`) && PathPrefix(`/`)'
+      - traefik.http.routers.http-0-wol.entryPoints=http
+
+# configs
+# domain: http://wol.10.0.0.37.sslip.io:5000

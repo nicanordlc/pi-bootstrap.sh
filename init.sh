@@ -3,6 +3,7 @@ set -Eeuo pipefail
 
 #apps
 sudo apt install -y \
+  vim \
   git \
   tmux
 

@@ -1,0 +1,17 @@
+version: "3"
+services:
+  upsnap:
+    container_name: upsnap
+    image: ghcr.io/seriousm4x/upsnap:4
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/pb_data
+    # entrypoint: /bin/sh -c "apk update && apk add --no-cache <YOUR_PACKAGE> && rm -rf /var/cache/apk/* && ./upsnap serve --http 0.0.0.0:8090"
+    labels:
+      - traefik.enable=true
+      - 'traefik.http.routers.http-0-upsnap.rule=Host(`upsnap.10.0.0.37.sslip.io`) && PathPrefix(`/`)'
+      - traefik.http.routers.http-0-upsnap.entryPoints=http
+
+# configs
+# domain: http://upsnap.10.0.0.37.sslip.io:8090
