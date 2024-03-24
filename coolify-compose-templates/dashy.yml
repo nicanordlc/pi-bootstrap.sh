@@ -23,7 +23,7 @@ services:
       start_period: 40s
     labels:
       - traefik.enable=true
-      - 'traefik.http.routers.http-0-dashy.rule=Host(`dashy.10.0.0.37.sslip.io`) && PathPrefix(`/`)'
+      - 'traefik.http.routers.http-0-dashy.rule=Host(`dashy.nikasol.xyz`) && PathPrefix(`/`)'
       - traefik.http.routers.http-0-dashy.entryPoints=http
       # enable https
       - traefik.http.routers.http-0-dashy.middlewares=gzip
