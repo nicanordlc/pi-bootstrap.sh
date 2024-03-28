@@ -1,4 +1,3 @@
-# https://coolify.io/docs/knowledge-base/traefik/wildcard-certificates
 version: '3.8'
 networks:
   coolify:
@@ -8,8 +7,6 @@ services:
     container_name: coolify-proxy
     image: 'traefik:v2.10'
     restart: unless-stopped
-    environment:
-      - DUCKDNS_TOKEN=<tktk>
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     networks:
@@ -43,18 +40,10 @@ services:
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
-      - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
-      - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
-      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=duckdns'
-      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=0'
-      - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
       - '--providers.docker=true'
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.entrypoints=http
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
-      - traefik.http.routers.traefik.tls.domains[0].main=nikasol.xyz
-      - traefik.http.routers.traefik.tls.domains[0].sans=*.nikasol.xyz
       - traefik.http.services.traefik.loadbalancer.server.port=8080
       - coolify.managed=true

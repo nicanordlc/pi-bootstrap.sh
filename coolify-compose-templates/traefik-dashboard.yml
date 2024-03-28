@@ -1,7 +1,7 @@
 http:
   routers:
     dashboard:
-      rule: Host(`10.0.0.37.sslip.io`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+      rule: Host(`dsb.nikasol.xyz`) && PathPrefix(`/`)
       service: api@internal
       middlewares:
         - auth
@@ -9,4 +9,6 @@ http:
     auth:
       basicAuth:
         users:
-          - "test:$apr1$154ethlp$Re.R1QjCkyOyKKmgYHHYP1"
+          - "nica:$2y$05$oYfaOsV17shlw89RI15zuOQ3aMtREGiphlPRTPJcmShGCVq6MG1oK"
+
+# https://coolify.io/docs/knowledge-base/traefik/dashboard

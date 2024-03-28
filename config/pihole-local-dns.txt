@@ -1,0 +1,2 @@
+router.home      10.0.0.1
+tplink-deco.home 10.0.0.84
