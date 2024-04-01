@@ -3,6 +3,7 @@ services:
   dashy:
     image: lissy93/dashy
     container_name: dashy
+    hostname: dashy
     # Pass in your config file below, by specifying the path on your host machine
     volumes:
       - /data/dashy/conf.yml:/app/public/conf.yml # @see: create volume beforehand

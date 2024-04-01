@@ -3,6 +3,7 @@ services:
   moonlight:
     image: ghcr.io/cabaalexander/coolify-nginx-reverse-proxy:latest
     container_name: nginx-proxy-moonlight
+    hostname: nginx-proxy-moonlight
     environment:
       - W_PROXY_URL=${W_PROXY_URL:-https://coolify.io}
       - W_CLIENT_MAX_BODY_SIZE=${W_CLIENT_MAX_BODY_SIZE:-20M}

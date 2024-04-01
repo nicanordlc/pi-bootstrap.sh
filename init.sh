@@ -10,6 +10,7 @@ _run(){
 
 #apps
 sudo apt install -y \
+  dnsutils \
   vim \
   git \
   tmux
