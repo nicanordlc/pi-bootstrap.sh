@@ -9,8 +9,8 @@ services:
       - "53:53/udp"
       - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
     environment:
-      TZ: 'America/Santo_Domingo'
-      WEBPASSWORD: ${W_PASSWORD}
+      - TZ=America/Santo_Domingo
+      - WEBPASSWORD=${W_PASSWORD}
     # Volumes store your data between container upgrades
     volumes:
       - /data/pihole/etc-pihole:/etc/pihole

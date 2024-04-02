@@ -1,0 +1,40 @@
+version: '3'
+services:
+  jellyfin:
+    image: 'lscr.io/linuxserver/jellyfin:latest'
+    container_name: jellyfin
+    hostname: jellyfin
+    environment:
+      - SERVICE_FQDN_JELLYFIN_8096
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Santo_Domingo
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.nikasol.xyz
+    volumes:
+      - /data/jellyfin/config:/config
+      - /data/jellyfin/tvshows:/data/tvshows
+      - /data/jellyfin/movies:/data/movies
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://localhost:8096'
+      interval: 2s
+      timeout: 10s
+      retries: 15
+    labels:
+      - traefik.enable=true
+      - 'traefik.http.routers.http-0-jellyfin.rule=Host(`jellyfin.nikasol.xyz`) && PathPrefix(`/`)'
+      - traefik.http.routers.http-0-jellyfin.entryPoints=http
+      # enable https
+      - traefik.http.routers.http-0-jellyfin.middlewares=gzip
+      - traefik.http.services.http-0-jellyfin.loadbalancer.server.port=8090
+      - traefik.http.routers.http-0-jellyfin.tls=true
+      - traefik.http.routers.http-0-jellyfin.tls.certresolver=letsencrypt
+      - traefik.http.routers.http-0-jellyfin.entryPoints=https
+      - traefik.http.routers.http-0-jellyfin.middlewares=redirect-to-https
+
+# configs
+# domain: https://jellyfin.nikasol.xyz:8096
+

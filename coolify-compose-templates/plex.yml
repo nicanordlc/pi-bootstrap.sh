@@ -1,0 +1,34 @@
+version: "3"
+services:
+  plex:
+    image: ghcr.io/linuxserver/plex
+    container_name: plex
+    hostname: plex
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Santo_Domingo
+      - VERSION=docker
+    volumes:
+      - /data/plex/config:/config
+      - /data/plex/tv:/tv
+      - /data/plex/movies:/movies
+      - /data/plex/series:/series
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - 'traefik.http.routers.http-0-plex.rule=Host(`plex.nikasol.xyz`) && PathPrefix(`/`)'
+      - traefik.http.routers.http-0-plex.entryPoints=http
+      # enable https
+      - traefik.http.routers.http-0-plex.middlewares=gzip
+      - traefik.http.services.http-0-plex.loadbalancer.server.port=80
+      - traefik.http.routers.http-0-plex.tls=true
+      - traefik.http.routers.http-0-plex.tls.certresolver=letsencrypt
+      - traefik.http.routers.http-0-plex.entryPoints=https
+      - traefik.http.routers.http-0-plex.middlewares=redirect-to-https
+
+# plex ports:
+# https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/
+
+# configs
+# domain: https://plex.nikasol.xyz:32400/web

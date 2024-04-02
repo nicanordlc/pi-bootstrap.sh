@@ -149,4 +149,26 @@ sections:
         id: 0_404_pokemongymtracker
     filteredItems:
       - *ref_8
+  - name: Media
+    icon: 📺
+    displayData:
+      sortBy: most-used
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: true
+    items:
+      - &ref_9
+        title: Plex
+        icon: https://plex.nikasol.xyz/web/favicon.ico
+        url: https://plex.nikasol.xyz/web/index.html#!/
+        id: 0_480_plex
+      - &ref_10
+        title: Jellyfin
+        icon: https://jellyfin.nikasol.xyz/web/bc8d51405ec040305a87.ico
+        url: https://jellyfin.nikasol.xyz/web/index.html#!/home.html
+        id: 1_480_jellyfin
+    filteredItems:
+      - *ref_9
+      - *ref_10
 
