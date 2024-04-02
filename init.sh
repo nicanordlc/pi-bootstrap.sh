@@ -15,4 +15,11 @@ sudo apt install -y \
   git \
   tmux
 
+# set a fixed DNS for the server
+sudo nmcli connection modify preconfigured ipv4.ignore-auto-dns yes
+sudo nmcli connection modify preconfigured ipv4.dns "1.1.1.1"
+sudo systemctl restart NetworkManager
+# check DNS: nmcli dev show | grep DNS
+
 _run ./docker.sh
+
