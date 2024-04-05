@@ -13,6 +13,10 @@ services:
       - PASSWORD=${SERVICE_PASSWORD_64_PASSWORDCODESERVER}
       - SUDO_PASSWORD=${SERVICE_PASSWORD_SUDOCODESERVER}
       - DEFAULT_WORKSPACE=/config/workspace
+      # mods
+      - DOCKER_MODS=linuxserver/mods:code-server-python3
+        |linuxserver/mods:code-server-nodejs
+        |linuxserver/mods:code-server-golang-1.22
     volumes:
       - /data/code-server/config:/config
     healthcheck:
