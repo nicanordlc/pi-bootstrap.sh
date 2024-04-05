@@ -1,2 +1,3 @@
 router.home      10.0.0.1
 tplink-deco.home 10.0.0.84
+homelab5g.home   10.0.0.37
