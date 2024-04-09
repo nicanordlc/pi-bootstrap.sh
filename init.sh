@@ -10,6 +10,7 @@ _run(){
 
 #apps
 sudo apt install -y \
+  exfat-fuse \
   dnsutils \
   vim \
   git \
