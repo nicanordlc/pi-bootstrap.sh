@@ -10,6 +10,7 @@ _run(){
 
 #apps
 sudo apt install -y \
+  libimage-exiftool-perl \
   exfat-fuse \
   dnsutils \
   vim \
