@@ -1,11 +1,19 @@
 #!/bin/bash
 set -Eeuo pipefail
 
+REPO_URL="https://raw.githubusercontent.com/cabaalexander/pi-bootstrap.sh/main"
+
 _run(){
-  local REPO_URL file_path
-  REPO_URL="https://raw.githubusercontent.com/cabaalexander/pi-bootstrap.sh/main"
+  local file_path
   file_path=$(basename ${1:-})
   curl -fsSL ${REPO_URL}/${file_path} | bash 
+}
+
+_copy(){
+  local file_path dst_path
+  file_path=$(basename ${1:-})
+  dst_path=${2:-}
+  curl -fsSL ${REPO_URL}/${file_path} > $dst_path
 }
 
 #apps
@@ -24,4 +32,8 @@ sudo systemctl restart NetworkManager
 # check DNS: nmcli dev show | grep DNS
 
 _run ./docker.sh
+
+_copy \
+  ./config/etc-network-interfaces-d-main.conf \
+  /etc/network/interfaces.d/main.conf
 
