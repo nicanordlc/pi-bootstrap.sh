@@ -23,6 +23,7 @@ sudo apt install -y \
   dnsutils \
   vim \
   git \
+  hostapd \
   tmux
 
 # set a fixed DNS for the server
