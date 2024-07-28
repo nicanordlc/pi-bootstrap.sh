@@ -1,14 +1,16 @@
 http:
   routers:
     dashboard:
-      rule: Host(`dsb.nikasol.xyz`) && PathPrefix(`/`)
+      rule: 'Host(`dashboard.nikasol.xyz`) && PathPrefix(`/`)'
       service: api@internal
+      tls:
+        certresolver: letsencrypt
       middlewares:
         - auth
   middlewares:
     auth:
       basicAuth:
         users:
-          - "nica:$2y$05$oYfaOsV17shlw89RI15zuOQ3aMtREGiphlPRTPJcmShGCVq6MG1oK"
+          - 'nica:$2y$05$oYfaOsV17shlw89RI15zuOQ3aMtREGiphlPRTPJcmShGCVq6MG1oK'
 
 # https://coolify.io/docs/knowledge-base/traefik/dashboard

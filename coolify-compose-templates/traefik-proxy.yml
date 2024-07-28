@@ -9,7 +9,7 @@ services:
     image: 'traefik:v2.10'
     restart: unless-stopped
     environment:
-      - DUCKDNS_TOKEN=<tktk>
+      - DUCKDNS_TOKEN=<token>
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     networks:
@@ -53,8 +53,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.traefik.entrypoints=http
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
-      - traefik.http.routers.traefik.tls.domains[0].main=nikasol.xyz
-      - traefik.http.routers.traefik.tls.domains[0].sans=*.nikasol.xyz
       - traefik.http.services.traefik.loadbalancer.server.port=8080
       - coolify.managed=true
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+      - traefik.http.routers.traefik.tls.domains[0].main=<domain>
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.<domain>
