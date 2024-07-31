@@ -16,6 +16,7 @@ sudo apt install -y \
   dnsutils \
   vim \
   git \
+  vifm \
   tmux
 
 #start
