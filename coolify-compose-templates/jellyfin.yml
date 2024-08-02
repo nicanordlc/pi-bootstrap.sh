@@ -14,7 +14,7 @@ services:
       - /data/jellyfin/config:/config
       - /data/jellyfin/tvshows:/data/tvshows
       - /data/jellyfin/movies:/data/movies
-      - /mnt/usb0/Videos:/data/usb0videos
+      - /media/nica/hdd/videos:/data/media/hdd
     healthcheck:
       test:
         - CMD
