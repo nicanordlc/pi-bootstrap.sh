@@ -1,0 +1,11 @@
+services:
+  ftp-server:
+    environment:
+      - FTP_USER=omni
+      - FTP_PASS=$SERVICE_PASSWORD_FTP
+    image: garethflowers/ftp-server
+    ports:
+      - '20-21:20-21/tcp'
+      - '40000-40009:40000-40009/tcp' # Only needed for passive mode
+    volumes:
+      - /data/ftp:/home/omni
