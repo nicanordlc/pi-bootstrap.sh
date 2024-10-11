@@ -1,0 +1,10 @@
+services:
+  novnc:
+    image: novnc:latest
+    environment:
+      - SERVICE_FQDN_NOVNC_8080
+    build: .
+    ports:
+      - 9000:80
+    labels:
+      - 'traefik.http.middlewares.walking-folks-novnc.basicauth.users=test:$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG'

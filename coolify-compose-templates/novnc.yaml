@@ -1,0 +1,13 @@
+services:
+  novnc:
+    image: theasp/novnc:latest
+    environment:
+      - SERVICE_FQDN_NOVNC_8080
+      # Adjust to your screen size
+      # - DISPLAY_WIDTH=1600
+      # - DISPLAY_HEIGHT=968
+      # - RUN_XTERM=no
+    # volumes:
+      # - novnc-data:/app
+    labels:
+      - 'traefik.http.middlewares.walking-folks-novnc.basicauth.users=test:$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG'
