@@ -1,7 +1,7 @@
 #!/bin/bash
 set -Eeuo pipefail
 
-REPO_URL="https://raw.githubusercontent.com/cabaalexander/pi-bootstrap.sh/main"
+REPO_URL="https://raw.githubusercontent.com/nicanordlc/pi-bootstrap.sh/main"
 
 _run(){
   local file_path

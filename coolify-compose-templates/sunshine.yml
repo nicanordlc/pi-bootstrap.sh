@@ -1,24 +1,8 @@
-version: '3'
 services:
   sunshine:
-    image: ghcr.io/cabaalexander/coolify-nginx-reverse-proxy:latest
-    container_name: nginx-proxy-sunshine
-    hostname: nginx-proxy-sunshine
+    image: ghcr.io/nicanordlc/coolify-nginx-reverse-proxy:latest
     environment:
-      - W_PROXY_URL=${W_PROXY_URL:-https://coolify.io}
-      - W_CLIENT_MAX_BODY_SIZE=${W_CLIENT_MAX_BODY_SIZE:-20M}
+      - SERVICE_FQDN_SUNSHINE_80
+      - PROXY_URL=${PROXY_URL:-https://10.0.0.32:47990/}
     restart: unless-stopped
-    labels:
-      - traefik.enable=true
-      - 'traefik.http.routers.http-0-sunshine.rule=Host(`sunshine.nikasol.xyz`) && PathPrefix(`/`)'
-      - traefik.http.routers.http-0-sunshine.entryPoints=http
-      # enable https
-      - traefik.http.routers.http-0-sunshine.middlewares=gzip
-      - traefik.http.services.http-0-sunshine.loadbalancer.server.port=8090
-      - traefik.http.routers.http-0-sunshine.tls=true
-      - traefik.http.routers.http-0-sunshine.tls.certresolver=letsencrypt
-      - traefik.http.routers.http-0-sunshine.entryPoints=https
-      - traefik.http.routers.http-0-sunshine.middlewares=redirect-to-https
 
-# configs
-# domain: https://sunshine.nikasol.xyz:80
