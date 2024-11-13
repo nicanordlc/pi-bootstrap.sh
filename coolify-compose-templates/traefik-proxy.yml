@@ -1,15 +1,13 @@
-# https://coolify.io/docs/knowledge-base/traefik/wildcard-certificates
-version: '3.8'
 networks:
   coolify:
     external: true
 services:
   traefik:
-    container_name: coolify-proxy
-    image: 'traefik:v2.10'
-    restart: unless-stopped
     environment:
-      - DUCKDNS_TOKEN=<token>
+      - DUCKDNS_TOKEN=<DUCKDNS_TOKEN>
+    container_name: coolify-proxy
+    image: 'traefik:v3.1'
+    restart: unless-stopped
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     networks:
@@ -17,6 +15,7 @@ services:
     ports:
       - '80:80'
       - '443:443'
+      - '443:443/udp'
       - '8080:8080'
     healthcheck:
       test: 'wget -qO- http://localhost:80/ping || exit 1'
@@ -37,24 +36,26 @@ services:
       - '--entryPoints.http.http2.maxConcurrentStreams=50'
       - '--entrypoints.https.http.encodequerysemicolons=true'
       - '--entryPoints.https.http2.maxConcurrentStreams=50'
+      - '--entrypoints.https.http3'
       - '--providers.docker.exposedbydefault=false'
       - '--providers.file.directory=/traefik/dynamic/'
       - '--providers.file.watch=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
+      - '--providers.docker=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=duckdns'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=0'
       - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
-      - '--providers.docker=true'
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.entrypoints=http
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.services.traefik.loadbalancer.server.port=8080
       - coolify.managed=true
+      - coolify.proxy=true
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt
       - traefik.http.routers.traefik.tls.domains[0].main=<domain>
       - traefik.http.routers.traefik.tls.domains[0].sans=*.<domain>
