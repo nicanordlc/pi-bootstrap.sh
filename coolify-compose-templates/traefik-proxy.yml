@@ -40,14 +40,12 @@ services:
       - '--providers.docker.exposedbydefault=false'
       - '--providers.file.directory=/traefik/dynamic/'
       - '--providers.file.watch=true'
-      - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
-      - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
       - '--providers.docker=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=duckdns'
-      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=0'
+      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=2'
       - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
     labels:
       - traefik.enable=true
@@ -57,5 +55,5 @@ services:
       - coolify.managed=true
       - coolify.proxy=true
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt
-      - traefik.http.routers.traefik.tls.domains[0].main=<domain>
-      - traefik.http.routers.traefik.tls.domains[0].sans=*.<domain>
+      - traefik.http.routers.traefik.tls.domains[0].main=<domain>.duckdns.org
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.<domain>.duckdns.org

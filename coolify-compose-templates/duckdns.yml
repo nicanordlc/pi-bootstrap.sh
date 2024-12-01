@@ -8,12 +8,9 @@ services:
       - PUID=1000 #optional
       - PGID=1000 #optional
       - TZ=America/Santo_Domingo
-      - SUBDOMAINS=${W_SUBDOMAINS}
-      - TOKEN=${W_TOKEN}
+      - SUBDOMAINS=${SUBDOMAINS}
+      - TOKEN=${TOKEN}
       - LOG_FILE=false #optional
     volumes:
       - /data/duckdns/config:/config #optional
     restart: unless-stopped
-
-# configs
-# n/a

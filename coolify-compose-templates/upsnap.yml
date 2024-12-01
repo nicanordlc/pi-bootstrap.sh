@@ -1,25 +1,9 @@
-version: "3"
 services:
   upsnap:
     image: ghcr.io/seriousm4x/upsnap:4
-    container_name: upsnap
-    hostname: upsnap
     network_mode: host
     restart: unless-stopped
+    environment:
+      - SERVICE_FQDN_UPSNAP_8090
     volumes:
       - ./data:/app/pb_data
-    # entrypoint: /bin/sh -c "apk update && apk add --no-cache <YOUR_PACKAGE> && rm -rf /var/cache/apk/* && ./upsnap serve --http 0.0.0.0:8090"
-    labels:
-      - traefik.enable=true
-      - 'traefik.http.routers.http-0-upsnap.rule=Host(`upsnap.nikasol.xyz`) && PathPrefix(`/`)'
-      - traefik.http.routers.http-0-upsnap.entryPoints=http
-      # enable https
-      - traefik.http.routers.http-0-upsnap.middlewares=gzip
-      - traefik.http.services.http-0-upsnap.loadbalancer.server.port=8090
-      - traefik.http.routers.http-0-upsnap.tls=true
-      - traefik.http.routers.http-0-upsnap.tls.certresolver=letsencrypt
-      - traefik.http.routers.http-0-upsnap.entryPoints=https
-      - traefik.http.routers.http-0-upsnap.middlewares=redirect-to-https
-
-# configs
-# domain: https://upsnap.nikasol.xyz:8090

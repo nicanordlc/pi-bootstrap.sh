@@ -2,7 +2,7 @@ services:
   ftp-server:
     environment:
       - FTP_USER=omni
-      - FTP_PASS=$SERVICE_PASSWORD_FTP
+      - FTP_PASS=$SERVICE_PASSWORD_64_FTP
     image: garethflowers/ftp-server
     ports:
       - '20-21:20-21/tcp'

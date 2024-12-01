@@ -2,7 +2,7 @@ services:
   sunshine:
     image: ghcr.io/nicanordlc/coolify-nginx-reverse-proxy:latest
     environment:
-      - SERVICE_FQDN_SUNSHINE_80
+      - SERVICE_FQDN_SUNSHINE
       - PROXY_URL=${PROXY_URL:-https://10.0.0.32:47990/}
     restart: unless-stopped
 
