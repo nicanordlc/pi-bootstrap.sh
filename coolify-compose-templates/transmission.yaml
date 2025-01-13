@@ -1,0 +1,26 @@
+services:
+  transmission:
+    image: 'lscr.io/linuxserver/transmission:latest'
+    environment:
+      - SERVICE_FQDN_TRANSMISSION_9091
+      - PUID=1000
+      - PGID=1000
+      - 'USER=${SERVICE_USER_ADMIN}'
+      - 'PASS=${SERVICE_PASSWORD_ADMIN}'
+    volumes:
+      - '/data/transmission/config:/config'
+      - '/data/transmission/downloads:/downloads'
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-sSfL'
+        - '-u'
+        - '${SERVICE_USER_ADMIN}:${SERVICE_PASSWORD_ADMIN}'
+        - 'http://localhost:9091/'
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - 'traefik.http.middlewares.transmission.basicauth.users=nicanordlc:$2y$05$WKZa1YrwszuOvltRkh.ZqOq8stDO2Pucvg2HOpxkOPhdhRh2VqT/i'
+

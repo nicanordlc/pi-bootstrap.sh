@@ -9,9 +9,8 @@ services:
       - TZ=America/Santo_Domingo
     volumes:
       - /data/jellyfin/config:/config
-      - /data/jellyfin/tvshows:/data/tvshows
-      - /data/jellyfin/movies:/data/movies
       - /media/nica/hdd/videos:/data/media/hdd
+      - /data/transmission/downloads:/data/transmission
     healthcheck:
       test:
         - CMD
@@ -21,3 +20,4 @@ services:
       interval: 2s
       timeout: 10s
       retries: 15
+
