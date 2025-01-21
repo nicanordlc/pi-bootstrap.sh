@@ -1,7 +1,7 @@
 #!/bin/bash
 set -Eeuo pipefail
 
-docker service rm $(docker service ls -q)
+docker service rm "$(docker service ls -q)"
 ## remove CapRover settings directory
 sudo rm -rf /captain
 ## leave swarm if you don't want it

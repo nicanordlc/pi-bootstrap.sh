@@ -3,10 +3,10 @@ set -Eeuo pipefail
 
 REPO_URL="https://raw.githubusercontent.com/nicanordlc/pi-bootstrap.sh/main"
 
-_run(){
+_run() {
   local file_path
-  file_path=$(basename ${1:-})
-  curl -fsSL ${REPO_URL}/${file_path} | bash 
+  file_path=$(basename "${1:-}")
+  curl -fsSL ${REPO_URL}/"${file_path}" | bash
 }
 
 #apps
@@ -21,5 +21,4 @@ sudo apt install -y \
 
 #start
 
-_run ./docker.sh
-
+_run ./installs/docker.sh
