@@ -4,7 +4,7 @@ services:
     environment:
       - SERVICE_FQDN_PIHOLE_80
       - TZ=America/Santo_Domingo
-      - WEBPASSWORD=${SERVICE_PASSWORD_PIHOLE}
+      - FTLCONF_webserver_api_password=${SERVICE_PASSWORD_64_PIHOLE}
     ports:
       - "53:53/tcp"
       - "53:53/udp"

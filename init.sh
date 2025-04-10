@@ -10,7 +10,8 @@ _run() {
   curl -fsSL "$req_url" | bash
 }
 
-#apps
+sudo apt update -y
+sudo apt upgrade -y
 sudo apt install -y \
   libimage-exiftool-perl \
   exfat-fuse \
@@ -19,7 +20,5 @@ sudo apt install -y \
   git \
   vifm \
   tmux
-
-#start
 
 _run ./installs/docker.sh
