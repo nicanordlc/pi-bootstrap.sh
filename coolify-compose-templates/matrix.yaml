@@ -10,6 +10,8 @@ services:
       - ENABLE_REGISTRATION=${ENABLE_REGISTRATION}
       - RECAPTCHA_PUBLIC_KEY=${RECAPTCHA_PUBLIC_KEY}
       - RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}
+      - ADMIN_NAME=$SERVICE_USER_NAME
+      - ADMIN_PASS=$SERVICE_PASSWORD_PASS
     entrypoint:
       - /bin/bash
       - -c
@@ -32,6 +34,19 @@ services:
         recaptcha_private_key: "${RECAPTCHA_PRIVATE_KEY}"
         recaptcha_siteverify_api: "https://www.google.com/recaptcha/api/siteverify"
         EOF
+
+        register_admin(){
+          while ! curl -I localhost:8008 &>/dev/null; do
+            sleep 1
+          done
+          register_new_matrix_user \
+            -a \
+            -u ${ADMIN_NAME} \
+            -p ${ADMIN_PASS} \
+            -c /data/homeserver.yaml \
+            http://localhost:8008 &>/dev/null
+        }
+        register_admin &
         
         /start.py
     healthcheck:
