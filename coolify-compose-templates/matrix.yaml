@@ -1,0 +1,45 @@
+services:
+  matrix:
+    image: matrixdotorg/synapse:latest
+    volumes:
+      - ./data:/data
+    environment:
+      - SERVICE_FQDN_MATRIX_8008
+      - SYNAPSE_SERVER_NAME=${SERVICE_URL_MATRIX}
+      - SYNAPSE_REPORT_STATS=no
+      - ENABLE_REGISTRATION=${ENABLE_REGISTRATION}
+      - RECAPTCHA_PUBLIC_KEY=${RECAPTCHA_PUBLIC_KEY}
+      - RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        ! test -f /data/homeserver.yaml && /start.py generate
+
+        test -n "${ENABLE_REGISTRATION}" && ! grep "#registration" /data/homeserver.yaml &>/dev/null \
+        && echo -e "\n" >> /data/homeserver.yaml \
+        && cat <<EOF >> /data/homeserver.yaml
+        #registration
+        enable_registration: true  # Allows users to register on your server.
+        EOF
+
+        ! grep ${RECAPTCHA_PUBLIC_KEY} /data/homeserver.yaml &>/dev/null \
+        && echo -e "\n" >> /data/homeserver.yaml \
+        && cat <<EOF >> /data/homeserver.yaml
+        # reCAPTCHA settings
+        enable_registration_captcha: true  # Enables CAPTCHA for registrations.
+        recaptcha_public_key: "${RECAPTCHA_PUBLIC_KEY}"
+        recaptcha_private_key: "${RECAPTCHA_PRIVATE_KEY}"
+        recaptcha_siteverify_api: "https://www.google.com/recaptcha/api/siteverify"
+        EOF
+        
+        /start.py
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -I
+        - localhost:8008
+      interval: 5s
+      timeout: 3s
+      retries: 5
