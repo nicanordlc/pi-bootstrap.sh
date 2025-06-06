@@ -10,8 +10,8 @@ services:
       - ENABLE_REGISTRATION=${ENABLE_REGISTRATION}
       - RECAPTCHA_PUBLIC_KEY=${RECAPTCHA_PUBLIC_KEY}
       - RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}
-      - ADMIN_NAME=$SERVICE_USER_NAME
-      - ADMIN_PASS=$SERVICE_PASSWORD_PASS
+      - ADMIN_NAME=$SERVICE_USER_MATRIX
+      - ADMIN_PASS=$SERVICE_PASSWORD_MATRIX
     entrypoint:
       - /bin/bash
       - -c
@@ -41,8 +41,8 @@ services:
           done
           register_new_matrix_user \
             -a \
-            -u ${ADMIN_NAME} \
-            -p ${ADMIN_PASS} \
+            -u ${SERVICE_USER_MATRIX} \
+            -p ${SERVICE_PASSWORD_MATRIX} \
             -c /data/homeserver.yaml \
             http://localhost:8008 &>/dev/null
         }
