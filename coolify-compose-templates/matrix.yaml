@@ -10,23 +10,88 @@ services:
       - ENABLE_REGISTRATION=${ENABLE_REGISTRATION}
       - RECAPTCHA_PUBLIC_KEY=${RECAPTCHA_PUBLIC_KEY}
       - RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}
-      - ADMIN_NAME=$SERVICE_USER_MATRIX
-      - ADMIN_PASS=$SERVICE_PASSWORD_MATRIX
+      - B_SERVER_NAME=${SERVICE_URL_MATRIX}
+      - B_ADMIN_NAME=${SERVICE_USER_MATRIX}
+      - B_ADMIN_PASS=${SERVICE_PASSWORD_MATRIX}
     entrypoint:
       - /bin/bash
       - -c
       - |
         ! test -f /data/homeserver.yaml && /start.py generate
 
+        # registration_shared_secret
+        grep "registration_shared_secret" /data/homeserver.yaml \
+        | awk '{print $2}' > ./registration_shared_secret
+
+        # macaroon_secret_key
+        grep "macaroon_secret_key" /data/homeserver.yaml \
+        | awk '{print $2}' > ./macaroon_secret_key
+
+        # form_secret
+        grep "form_secret" /data/homeserver.yaml \
+        | awk '{print $2}' > ./form_secret
+
+        ##########################
+        #                        #
+        # homeserver.yaml: start #
+        #                        #
+        ##########################
+        cat <<EOF > /data/homeserver.yaml
+        server_name: "${SERVICE_URL_MATRIX}"
+        pid_file: /data/homeserver.pid
+
+        # server
+        listeners:
+          - port: 8008
+            tls: false
+            type: http
+            x_forwarded: true
+            resources:
+              - names: [client, federation]
+                compress: false
+
+        # database
+        database:
+          name: sqlite3
+          args:
+            database: /data/homeserver.db
+
+        # general
+        log_config: "/data/${SERVICE_URL_MATRIX}.log.config"
+        media_store_path: /data/media_store
+        report_stats: false
+
+        # secrets
+        registration_shared_secret: $(<./registration_shared_secret)
+        macaroon_secret_key: $(<./macaroon_secret_key)
+        form_secret: $(<./form_secret)
+        signing_key_path: "/data/${SERVICE_URL_MATRIX}.signing.key"
+
+        #rooms
+        auto_join_rooms:
+          - "#general:${SERVICE_URL_MATRIX}"
+
+        # federation
+        trusted_key_servers:
+          - server_name: "matrix.org"
+        autocreate_auto_join_rooms_federated: false
+        allow_public_rooms_over_federation: false
+        EOF
+        ########################
+        #                      #
+        # homeserver.yaml: end #
+        #                      #
+        ########################
+
         test -n "${ENABLE_REGISTRATION}" && ! grep "#registration" /data/homeserver.yaml &>/dev/null \
-        && echo -e "\n" >> /data/homeserver.yaml \
+        && echo >> /data/homeserver.yaml \
         && cat <<EOF >> /data/homeserver.yaml
         #registration
         enable_registration: true  # Allows users to register on your server.
         EOF
 
         ! grep ${RECAPTCHA_PUBLIC_KEY} /data/homeserver.yaml &>/dev/null \
-        && echo -e "\n" >> /data/homeserver.yaml \
+        && echo >> /data/homeserver.yaml \
         && cat <<EOF >> /data/homeserver.yaml
         # reCAPTCHA settings
         enable_registration_captcha: true  # Enables CAPTCHA for registrations.
