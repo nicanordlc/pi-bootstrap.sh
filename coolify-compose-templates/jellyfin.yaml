@@ -3,21 +3,19 @@ services:
     image: 'lscr.io/linuxserver/jellyfin:latest'
     environment:
       - SERVICE_FQDN_JELLYFIN_8096
-      - JELLYFIN_PublishedServerUrl=$SERVICE_FQDN_JELLYFIN_8096
       - PUID=1000
       - PGID=1000
       - TZ=America/Santo_Domingo
+      - JELLYFIN_PublishedServerUrl=$SERVICE_FQDN_JELLYFIN
     volumes:
       - /data/jellyfin/config:/config
-      - /media/nica/hdd/videos:/data/media/hdd
-      - /data/transmission/downloads:/data/transmission
+      - /data/jellyfin/videos:/videos
     healthcheck:
       test:
         - CMD
         - curl
         - '-f'
-        - 'http://localhost:8096'
+        - 'http://127.0.0.1:8096'
       interval: 2s
       timeout: 10s
       retries: 15
-
