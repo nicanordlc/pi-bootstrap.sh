@@ -19,6 +19,7 @@ sudo apt install -y \
   vim \
   git \
   vifm \
+  tree \
   tmux
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
