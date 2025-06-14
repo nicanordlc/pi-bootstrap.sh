@@ -21,4 +21,6 @@ sudo apt install -y \
   vifm \
   tmux
 
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 _run ./installs/docker.sh
