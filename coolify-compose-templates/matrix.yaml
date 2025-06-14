@@ -106,8 +106,8 @@ services:
           done
           register_new_matrix_user \
             -a \
-            -u ${SERVICE_USER_MATRIX} \
-            -p ${SERVICE_PASSWORD_MATRIX} \
+            -u ${SERVICE_USER_ADMIN} \
+            -p ${SERVICE_PASSWORD_ADMIN} \
             -c /data/homeserver.yaml \
             http://localhost:8008 &>/dev/null
         }

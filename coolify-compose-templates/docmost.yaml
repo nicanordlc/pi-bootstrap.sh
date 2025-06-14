@@ -10,14 +10,15 @@ services:
       - SERVICE_FQDN_DOCMOST_3000
       - APP_SECRET=$SERVICE_BASE64_APPKEY
       - APP_URL=$SERVICE_FQDN_DOCMOST_3000
-      - 'DATABASE_URL=postgresql://$SERVICE_USER_POSTGRES:$SERVICE_PASSWORD_POSTGRES@postgresql/docmost?schema=public'
-      - 'REDIS_URL=redis://redis:6379'
+      - DATABASE_URL=postgresql://$SERVICE_USER_POSTGRES:$SERVICE_PASSWORD_POSTGRES@postgresql/docmost?schema=public
+      - REDIS_URL=redis://redis:6379
       - MAIL_DRIVER=smtp
-      - SMTP_HOST=mailpit
-      - SMTP_PORT=1025
-      - SMTP_USERNAME=
-      - SMTP_PASSWORD=
-      - MAIL_FROM_ADDRESS=no-reply@example.com
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_SECURE=ssl
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
       - MAIL_FROM_NAME=Docmost
     volumes:
       - 'docmost:/app/data/storage'
@@ -30,6 +31,7 @@ services:
       interval: 2s
       timeout: 10s
       retries: 20
+
   postgresql:
     image: 'postgres:16-alpine'
     environment:
@@ -45,6 +47,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 20
+
   redis:
     image: 'redis:7.2-alpine'
     volumes:
@@ -57,8 +60,3 @@ services:
       interval: 5s
       timeout: 10s
       retries: 20
-  mailpit:
-    image: 'axllent/mailpit:latest'
-    environment:
-      - SERVICE_FQDN_MAILPIT_8025
-      - MP_UI_AUTH=${MP_UI_AUTH:-admin:admin}
