@@ -1,1 +1,4 @@
 https://www.shellhacks.com/raspberry-pi-mount-usb-drive-automatically/
+
+# fstab example
+UUID=<disk-UUID> /mnt/usb0 ext4 defaults,auto,users,rw,nofail 0 0

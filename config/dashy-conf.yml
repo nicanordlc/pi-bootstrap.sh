@@ -1,3 +1,14 @@
+---
+pageInfo:
+  title: Favorites
+  logo: https://cdn-icons-png.flaticon.com/128/10851/10851309.png
+  description: Hi 👋
+  navLinks:
+    - title: ☀️
+      path: https://sun.org/
+      target: newtab
+  footerText: ''
+
 appConfig:
   theme: nord-frost
   layout: auto
@@ -29,7 +40,7 @@ appConfig:
   auth:
     enableGuestAccess: true
     users:
-      - user: nica
+      - user: nicanordlc
         hash: 66a5b86b0e8bf6efff749031f95a3a0f2f6d966896506707413ff9abb53e11a8
         type: admin
     enableKeycloak: false
@@ -44,14 +55,7 @@ appConfig:
   disableUpdateChecks: false
   disableSmartSort: false
   enableErrorReporting: false
-pageInfo:
-  title: Dashy
-  description: Hi 👋
-  navLinks:
-    - title: ☀️
-      path: https://sun.org/
-      target: newtab
-  footerText: ''
+
 sections:
   - name: Home
     icon: 🏠
