@@ -1,0 +1,5 @@
+https://github.com/ehough/docker-nfs-server
+
+```sheell
+modprobe {nfs,nfsd,rpcsec_gss_krb5}
+```

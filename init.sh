@@ -20,6 +20,7 @@ sudo apt install -y \
   git \
   vifm \
   tree \
+  nfs-common \
   tmux
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
