@@ -1,0 +1,84 @@
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    user: root
+    volumes:
+      - ./data:/var/lib/grafana
+    environment:
+      - SERVICE_FQDN_GRAFANA_3000
+      - 'GF_SERVER_ROOT_URL=${SERVICE_FQDN_GRAFANA}'
+      - 'GF_SERVER_DOMAIN=${SERVICE_FQDN_GRAFANA}'
+      - 'GF_SECURITY_ADMIN_PASSWORD=${SERVICE_PASSWORD_GRAFANA}'
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://127.0.0.1:3000/api/health'
+      interval: 5s
+      timeout: 20s
+      retries: 10
+    depends_on:
+      prometheus:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:latest
+    user: root
+    volumes:
+      - ./data:/prometheus
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - '--spider'
+        - '-qO-'
+        - 'http://localhost:9090'
+      interval: 5s
+      timeout: 20s
+      retries: 20
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cat <<EOF > /prometheus/conf.yaml
+        global:
+          scrape_interval: 15s
+
+        scrape_configs:
+          - job_name: 'prometheus'
+            scrape_interval: 5s
+            static_configs:
+              - targets: ['localhost:9090']
+
+          - job_name: 'node_exporter'
+            static_configs:
+              - targets: ['node_exporter:9100']
+
+          - job_name: 'cadvisor'
+            static_configs:
+              - targets: ['cadvisor:8080']
+        EOF
+
+        /bin/prometheus --config.file=/prometheus/conf.yaml
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    volumes:
+      - '/:/host:ro,rslave'
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    user: root
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
