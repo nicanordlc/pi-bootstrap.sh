@@ -72,7 +72,6 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
-    user: root
     privileged: true
     volumes:
       - /:/rootfs:ro
