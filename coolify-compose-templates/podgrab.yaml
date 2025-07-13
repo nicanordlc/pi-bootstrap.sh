@@ -1,0 +1,10 @@
+services:
+  podgrab:
+    image: akhilrex/podgrab
+    environment:
+      - SERVICE_FQDN_PODGRAB_8080
+      - CHECK_FREQUENCY=240
+      - PASSWORD=${SERVICE_PASSWORD_ADMIN} # user: podgrab
+    volumes:
+      - ./config:/config
+      - ./data:/assets
