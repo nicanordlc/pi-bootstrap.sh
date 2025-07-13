@@ -1,0 +1,34 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:v2.32.3
+    environment:
+      - SERVICE_FQDN_FILEBROWSER_80
+    volumes:
+      -
+        type: bind
+        source: ./srv
+        target: /srv
+        isDirectory: true
+      -
+        type: bind
+        source: ./database.db
+        target: /database.db
+        isDirectory: false
+        content: ''
+      -
+        type: bind
+        source: ./filebrowser.json
+        target: /.filebrowser.json
+        read_only: true
+        content: "{\n  \"address\": \"0.0.0.0\",\n  \"port\": 80\n}"
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://127.0.0.1:80'
+      interval: 2s
+      timeout: 10s
+      retries: 15
+
+# password is generated on the logs
