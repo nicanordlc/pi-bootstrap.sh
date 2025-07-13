@@ -17,3 +17,6 @@ services:
       - 2049:2049/udp
       - 32765:32765/udp
       - 32767:32767/udp
+
+# TODO: maybe add samba: https://github.com/dperson/samba
+# https://github.com/dperson/samba/blob/master/docker-compose.yml
