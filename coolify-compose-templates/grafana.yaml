@@ -21,6 +21,20 @@ services:
     depends_on:
       prometheus:
         condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cat <<EOF >/etc/grafana/provisioning/datasources/default.yaml
+        apiVersion: 1
+        datasources:
+        - name: Prometheus (Main)
+          type: prometheus
+          url: http://prometheus:9090
+          isDefault: true
+        EOF
+
+        /run.sh
 
   prometheus:
     image: prom/prometheus:latest
@@ -37,6 +51,9 @@ services:
       interval: 5s
       timeout: 20s
       retries: 20
+    depends_on:
+      - node_exporter
+      - cadvisor
     entrypoint:
       - /bin/sh
       - -c
@@ -71,8 +88,12 @@ services:
       - '/:/host:ro,rslave'
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: zcube/cadvisor:latest
     privileged: true
+    command:
+      - '--docker_only=true'
+      - '--housekeeping_interval=30s'
+      - '--disable_metrics=accelerator,cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp'
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
