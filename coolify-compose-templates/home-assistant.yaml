@@ -5,6 +5,7 @@ services:
       - ./config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     privileged: true
     network_mode: host
     # INFO: this is how you map a device
@@ -12,11 +13,20 @@ services:
     #   - /dev/ttyUSB0:/dev/ttyUSB0
     environment:
       - SERVICE_FQDN_HOMEASSISTANT_8123
-      - PROXY_IP=${PROXY_IP:-10.0.0.1}
     entrypoint:
       - /bin/bash
       - -c
       - |
+        echo "coolify-proxy" > /tmp/target
+        echo "coolify" > /tmp/network
+
+        curl --silent --unix-socket /var/run/docker.sock \
+          "http://localhost/containers/$(cat /tmp/target)/json" \
+          | grep -o "\"$(cat /tmp/network)\"[^{]*{[^}]*\"IPAddress\":\"[0-9.]*\"" \
+          | grep -o '"IPAddress":"[0-9.]*"' \
+          | cut -d':' -f2 \
+          | tr -d '"' > /tmp/proxy_ip
+
         [ ! -f /config/automations.yaml ] && cat <<EOF > /config/automations.yaml
         []
         EOF
@@ -30,7 +40,6 @@ services:
         [ ! -f /config/secrets.yaml ] && cat <<EOF > /config/secrets.yaml
         # Use this file to store secrets like usernames and passwords.
         # Learn more at https://www.home-assistant.io/docs/configuration/secrets/
-        some_password: welcome
         EOF
 
         [ ! -f /config/configuration.yaml ] && cat <<EOF > /config/configuration.yaml
@@ -49,7 +58,7 @@ services:
         http:
           use_x_forwarded_for: true
           trusted_proxies:
-            - ${PROXY_IP}
+            - $(cat /tmp/proxy_ip)
           ip_ban_enabled: true
           login_attempts_threshold: 5
         EOF
