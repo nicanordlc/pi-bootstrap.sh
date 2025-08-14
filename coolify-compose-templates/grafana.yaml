@@ -49,6 +49,7 @@ services:
         EOF
 
         curl -sL https://grafana.com/api/dashboards/1860/revisions/41/download >/var/lib/grafana/dashboards/node-exporter-full.json
+        curl -sL https://grafana.com/api/dashboards/18038/revisions/1/download >/var/lib/grafana/dashboards/navidrome.json
 
         curl -sL https://grafana.com/api/dashboards/14282/revisions/1/download >/var/lib/grafana/dashboards/cadvisor-exporter-full.json
         awk -v insert="$(cat <<EOF
@@ -86,6 +87,10 @@ services:
     depends_on:
       - node_exporter
       - cadvisor
+    labels:
+      - traefik.http.middlewares.prometheus.basicauth.users=<user>:<pass>
+    environment:
+      - SERVICE_FQDN_PROMETHEUS_9090
     entrypoint:
       - /bin/sh
       - -c
@@ -107,6 +112,13 @@ services:
           - job_name: 'cadvisor'
             static_configs:
               - targets: ['cadvisor:8080']
+
+          # - job_name: 'navidrome'
+          #   metrics_path: <metrics-path>
+          #   static_configs:
+          #     - targets:
+          #         - <(sub)?domain>
+          #   scheme: https
         EOF
 
         /bin/prometheus --config.file=/prometheus/conf.yaml
