@@ -1,14 +1,15 @@
 services:
   grafana:
-    image: grafana/grafana-oss:latest
+    image: grafana/grafana-oss:${GRAFANA_TAG}
     user: root
     volumes:
       - ./data:/var/lib/grafana
     environment:
       - SERVICE_FQDN_GRAFANA_3000
-      - 'GF_SERVER_ROOT_URL=${SERVICE_FQDN_GRAFANA}'
-      - 'GF_SERVER_DOMAIN=${SERVICE_FQDN_GRAFANA}'
-      - 'GF_SECURITY_ADMIN_PASSWORD=${SERVICE_PASSWORD_GRAFANA}'
+      - GF_SERVER_ROOT_URL=${SERVICE_FQDN_GRAFANA}
+      - GF_SERVER_DOMAIN=${SERVICE_FQDN_GRAFANA}
+      - GF_SECURITY_ADMIN_PASSWORD=${SERVICE_PASSWORD_GRAFANA}
+      - GRAFANA_TAG=${GRAFANA_TAG:-12.1.0}
     healthcheck:
       test:
         - CMD
@@ -26,6 +27,68 @@ services:
       - -c
       - |
         mkdir -p /var/lib/grafana/dashboards
+
+        cat <<'EOFF' >/tmp/insert_datasource
+        #!/usr/bin/env bash
+        set -euo pipefail
+        DS_NAME="$$1"
+        awk -v name="$$DS_NAME" '
+          BEGIN { inserted = 0; seen_templating = 0 }
+          /"templating"[[:space:]]*:[[:space:]]*\{/ {
+            seen_templating = 1
+          }
+          /"list"[[:space:]]*:[[:space:]]*\[/ && seen_templating && !inserted {
+            safe = name
+            gsub(/\\/, "\\\\", safe)
+            gsub(/"/, "\\\"", safe)
+            print
+            print "      {"
+            print "        \"name\": \"" safe "\","
+            print "        \"label\": \"Datasource\","
+            print "        \"type\": \"datasource\","
+            print "        \"query\": \"prometheus\","
+            print "        \"refresh\": 1,"
+            print "        \"includeAll\": false,"
+            print "        \"current\": {}"
+            print "      },"
+            inserted = 1
+            seen_templating = 0
+            next
+          }
+          { print }
+        ' -
+        EOFF
+        chmod +x /tmp/insert_datasource
+
+        cat <<'EOFF' >/tmp/modify_title
+        #!/usr/bin/env bash
+        set -euo pipefail
+        NEW_TITLE="$$1"
+        awk -v new_title="$$NEW_TITLE" '
+          {
+            lines[NR] = $$0
+          }
+          END {
+            safe = new_title
+            gsub(/\\/, "\\\\", safe)
+            gsub(/"/, "\\\"", safe)
+            last_title = 0
+            for (i = 1; i <= NR; i++) {
+              if (lines[i] ~ /"title"[[:space:]]*:/) {
+                last_title = i
+              }
+            }
+            for (i = 1; i <= NR; i++) {
+              if (i == last_title) {
+                print "  \"title\": \"" safe "\","
+              } else {
+                print lines[i]
+              }
+            }
+          }
+        ' -
+        EOFF
+        chmod +x /tmp/modify_title
 
         cat <<EOF >/etc/grafana/provisioning/datasources/default.yaml
         apiVersion: 1
@@ -48,24 +111,20 @@ services:
                 /var/lib/grafana/dashboards
         EOF
 
-        curl -sL https://grafana.com/api/dashboards/1860/revisions/41/download >/var/lib/grafana/dashboards/node-exporter-full.json
-        curl -sL https://grafana.com/api/dashboards/18038/revisions/1/download >/var/lib/grafana/dashboards/navidrome.json
+        curl -sL https://grafana.com/api/dashboards/1860/revisions/41/download |
+        /tmp/modify_title "Host" >/var/lib/grafana/dashboards/node-exporter-full.json
 
-        curl -sL https://grafana.com/api/dashboards/14282/revisions/1/download >/var/lib/grafana/dashboards/cadvisor-exporter-full.json
-        awk -v insert="$(cat <<EOF
-              {
-                "name": "DS_PROMETHEUS",
-                "label": "Datasource",
-                "type": "datasource",
-                "query": "prometheus",
-                "refresh": 1,
-                "includeAll": false,
-                "current": {}
-              },
-        EOF
-        )" 'NR==750 {print; print insert; next} 1' \
-          /var/lib/grafana/dashboards/cadvisor-exporter-full.json > /tmp/tmpfile &&
-          mv /tmp/tmpfile /var/lib/grafana/dashboards/cadvisor-exporter-full.json
+        curl -sL https://grafana.com/api/dashboards/14282/revisions/1/download |
+        /tmp/modify_title "Containers" |
+        /tmp/insert_datasource DS_PROMETHEUS >/var/lib/grafana/dashboards/cadvisor-exporter-full.json
+
+        curl -sL https://grafana.com/api/dashboards/18038/revisions/1/download |
+        /tmp/modify_title "Music" |
+        /tmp/insert_datasource DS_VICTORIAMETRICS >/var/lib/grafana/dashboards/navidrome.json
+
+        curl -sL https://grafana.com/api/dashboards/12250/revisions/1/download |
+        /tmp/modify_title "Traefik" |
+        /tmp/insert_datasource DS_TRAEFIK >/var/lib/grafana/dashboards/traefik-2-2.json
 
         /run.sh
 
@@ -87,10 +146,16 @@ services:
     depends_on:
       - node_exporter
       - cadvisor
-    labels:
-      - traefik.http.middlewares.prometheus.basicauth.users=<user>:<pass>
     environment:
-      - SERVICE_FQDN_PROMETHEUS_9090
+      - SERVICE_FQDN_DDGRAFANA_9090
+      - PROMETHEUS_CONF_TRAEFIK_DOMAIN=${PROMETHEUS_CONF_TRAEFIK_DOMAIN}
+      - PROMETHEUS_CONF_TRAEFIK_USER=${PROMETHEUS_CONF_TRAEFIK_USER}
+      - PROMETHEUS_CONF_TRAEFIK_PASS=${PROMETHEUS_CONF_TRAEFIK_PASS}
+      - PROMETHEUS_CONF_TRAEFIK_METRICS_PATH=${PROMETHEUS_CONF_TRAEFIK_METRICS_PATH:-/metrics}
+      - PROMETHEUS_CONF_NAVIDROME_DOMAIN=${PROMETHEUS_CONF_NAVIDROME_DOMAIN}
+      - PROMETHEUS_CONF_NAVIDROME_METRICS_PATH=${PROMETHEUS_CONF_NAVIDROME_METRICS_PATH}
+    labels:
+      - traefik.http.middlewares.prometheus.basicauth.users=___user:pass
     entrypoint:
       - /bin/sh
       - -c
@@ -113,12 +178,20 @@ services:
             static_configs:
               - targets: ['cadvisor:8080']
 
-          # - job_name: 'navidrome'
-          #   metrics_path: <metrics-path>
-          #   static_configs:
-          #     - targets:
-          #         - <(sub)?domain>
-          #   scheme: https
+          - job_name: 'navidrome'
+            metrics_path: ${PROMETHEUS_CONF_NAVIDROME_METRICS_PATH}
+            static_configs:
+              - targets:
+                  - ${PROMETHEUS_CONF_NAVIDROME_DOMAIN}
+
+          - job_name: 'traefik'
+            metrics_path: ${PROMETHEUS_CONF_TRAEFIK_METRICS_PATH}
+            basic_auth:
+              username: '${PROMETHEUS_CONF_TRAEFIK_USER}'
+              password: '${PROMETHEUS_CONF_TRAEFIK_PASS}'
+            static_configs:
+              - targets:
+                  - ${PROMETHEUS_CONF_TRAEFIK_DOMAIN}
         EOF
 
         /bin/prometheus --config.file=/prometheus/conf.yaml
