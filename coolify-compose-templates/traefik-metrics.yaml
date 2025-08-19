@@ -1,0 +1,27 @@
+http:
+  middlewares:
+    metrics-auth:
+      basicAuth:
+        users:
+          - '___user:pass'
+
+  routers:
+    traefik-metrics-http:
+      rule: 'PathPrefix(`/metrics___secret`)'
+      entryPoints:
+        - http
+      service: prometheus@internal
+      middlewares:
+        - metrics-auth
+      priority: 100
+
+    traefik-metrics-https:
+      rule: 'PathPrefix(`/metrics___secret`)'
+      entryPoints:
+        - https
+      service: prometheus@internal
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - metrics-auth
+      priority: 100

@@ -6,7 +6,7 @@ services:
       - ND_ENABLESHARING=true
       - ND_ENABLEINSIGHTSCOLLECTOR=false
       - ND_PROMETHEUS_ENABLED=true
-      - ND_PROMETHEUS_METRICSPATH=/metrics_<secret>
+      - ND_PROMETHEUS_METRICSPATH=${METRICS_PATH:-/metrics___secret}
     volumes:
       - ./data:/data
       - /mnt/disk/<disk-uuid>/music:/music:ro
