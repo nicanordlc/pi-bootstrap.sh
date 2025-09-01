@@ -118,6 +118,10 @@ services:
         /tmp/modify_title "Containers" |
         /tmp/insert_datasource DS_PROMETHEUS >/var/lib/grafana/dashboards/cadvisor-exporter-full.json
 
+        curl -sL https://grafana.com/api/dashboards/10176/revisions/3/download |
+        /tmp/modify_title "PiHole" |
+        /tmp/insert_datasource DS_PROMETHEUS >/var/lib/grafana/dashboards/pihole-exporter.json
+
         curl -sL https://grafana.com/api/dashboards/18038/revisions/1/download |
         /tmp/modify_title "Music" |
         /tmp/insert_datasource DS_VICTORIAMETRICS >/var/lib/grafana/dashboards/navidrome.json
@@ -146,6 +150,7 @@ services:
     depends_on:
       - node_exporter
       - cadvisor
+      - pihole_exporter
     environment:
       - SERVICE_FQDN_DDGRAFANA_9090
       - PROMETHEUS_CONF_TRAEFIK_DOMAIN=${PROMETHEUS_CONF_TRAEFIK_DOMAIN}
@@ -155,7 +160,7 @@ services:
       - PROMETHEUS_CONF_NAVIDROME_DOMAIN=${PROMETHEUS_CONF_NAVIDROME_DOMAIN}
       - PROMETHEUS_CONF_NAVIDROME_METRICS_PATH=${PROMETHEUS_CONF_NAVIDROME_METRICS_PATH}
     labels:
-      - traefik.http.middlewares.prometheus.basicauth.users=___user:pass
+      - traefik.http.middlewares.authelia@file
     entrypoint:
       - /bin/sh
       - -c
@@ -177,6 +182,10 @@ services:
           - job_name: 'cadvisor'
             static_configs:
               - targets: ['cadvisor:8080']
+
+          - job_name: 'pihole'
+            static_configs:
+              - targets: ['pihole_exporter:9617']
 
           - job_name: 'navidrome'
             metrics_path: ${PROMETHEUS_CONF_NAVIDROME_METRICS_PATH}
@@ -219,3 +228,14 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
+
+  pihole_exporter:
+    image: ekofr/pihole-exporter:latest
+    environment:
+      - PIHOLE_PROTOCOL=https
+      - PIHOLE_PORT=443
+      - SKIP_TLS_VERIFICATION=1
+      - PIHOLE_HOSTNAME=${PIHOLE_HOSTNAME}
+      - PIHOLE_PASSWORD=${PIHOLE_PASSWORD}
+      - PORT=9617
+      - DEBUG=1
