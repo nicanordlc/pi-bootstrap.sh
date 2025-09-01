@@ -42,6 +42,11 @@ services:
         log:
           level: 'debug'
 
+        telemetry:
+          metrics:
+            enabled: false
+            address: 'tcp://:9959'
+
         totp:
           issuer: 'authelia.com'
 
