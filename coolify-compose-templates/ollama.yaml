@@ -21,7 +21,7 @@ services:
   open-webui:
     image: 'ghcr.io/open-webui/open-webui:cuda'
     environment:
-      - SERVICE_FQDN_OPEN_WEB_UI_8080
+      - SERVICE_URL_OPEN_WEB_UI_8080
       - NVIDIA_VISIBLE_DEVICES=all
       - ENABLE_RAG_WEB_SEARCH=true
     restart: unless-stopped

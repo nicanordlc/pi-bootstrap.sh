@@ -2,7 +2,7 @@ services:
   metube:
     image: 'ghcr.io/alexta69/metube:latest'
     environment:
-      - SERVICE_FQDN_METUBE_8081
+      - SERVICE_URL_METUBE_8081
       - UID=1000
       - GID=1000
       - DELETE_FILE_ON_TRASHCAN=true
@@ -18,4 +18,4 @@ services:
       timeout: 10s
       retries: 15
     labels:
-      - 'traefik.http.middlewares.metube.basicauth.users=<user>:<pass>'
+      - traefik.http.middlewares.authelia@file

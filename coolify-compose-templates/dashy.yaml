@@ -4,7 +4,7 @@ services:
     volumes:
       - dashy-data:/app/user-data
     environment:
-      - SERVICE_FQDN_DASHY
+      - SERVICE_URL_DASHY
       - NODE_ENV=production
     restart: unless-stopped
     healthcheck:

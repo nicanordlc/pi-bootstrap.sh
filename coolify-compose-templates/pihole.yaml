@@ -2,7 +2,7 @@ services:
   pihole:
     image: pihole/pihole:latest
     environment:
-      - SERVICE_FQDN_PIHOLE_80
+      - SERVICE_URL_PIHOLE_80
       - TZ=America/Santo_Domingo
       - FTLCONF_webserver_api_password=${SERVICE_PASSWORD_64_PIHOLE}
     ports:

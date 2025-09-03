@@ -2,7 +2,7 @@ services:
   navidrome:
     image: deluan/navidrome:latest
     environment:
-      - SERVICE_FQDN_NAVIDROME_4533
+      - SERVICE_URL_NAVIDROME_4533
       - ND_ENABLESHARING=true
       - ND_ENABLEINSIGHTSCOLLECTOR=false
       - ND_PROMETHEUS_ENABLED=true

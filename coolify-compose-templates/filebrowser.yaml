@@ -2,7 +2,7 @@ services:
   filebrowser:
     image: filebrowser/filebrowser:v2.32.3
     environment:
-      - SERVICE_FQDN_FILEBROWSER_80
+      - SERVICE_URL_FILEBROWSER_80
     volumes:
       -
         type: bind

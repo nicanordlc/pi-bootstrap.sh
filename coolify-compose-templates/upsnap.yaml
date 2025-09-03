@@ -4,6 +4,6 @@ services:
     network_mode: host
     restart: unless-stopped
     environment:
-      - SERVICE_FQDN_UPSNAP_8090
+      - SERVICE_URL_UPSNAP_8090
     volumes:
       - ./data:/app/pb_data

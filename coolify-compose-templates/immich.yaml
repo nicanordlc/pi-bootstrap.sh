@@ -2,10 +2,10 @@ services:
   immich:
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     volumes:
-      - ./upload:/usr/src/app/upload
+      - ___disk_path_immich:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - SERVICE_FQDN_IMMICH_2283
+      - SERVICE_URL_IMMICH_2283
       - UPLOAD_LOCATION=./library
       - DB_DATA_LOCATION=./postgres
       - DB_PASSWORD=$SERVICE_PASSWORD_POSTGRES

@@ -12,7 +12,7 @@ services:
     # devices:
     #   - /dev/ttyUSB0:/dev/ttyUSB0
     environment:
-      - SERVICE_FQDN_HOMEASSISTANT_8123
+      - SERVICE_URL_HOMEASSISTANT_8123
     entrypoint:
       - /bin/bash
       - -c

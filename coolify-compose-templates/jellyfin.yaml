@@ -2,14 +2,14 @@ services:
   jellyfin:
     image: 'lscr.io/linuxserver/jellyfin:latest'
     environment:
-      - SERVICE_FQDN_JELLYFIN_8096
+      - SERVICE_URL_JELLYFIN_8096
       - PUID=1000
       - PGID=1000
       - TZ=America/Santo_Domingo
-      - JELLYFIN_PublishedServerUrl=$SERVICE_FQDN_JELLYFIN
+      - JELLYFIN_PublishedServerUrl=$SERVICE_URL_JELLYFIN
     volumes:
       - /data/jellyfin/config:/config
-      - /data/jellyfin/videos:/videos
+      - ___disk_path_video:/videos
     healthcheck:
       test:
         - CMD

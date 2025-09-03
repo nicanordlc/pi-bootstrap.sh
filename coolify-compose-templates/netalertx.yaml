@@ -9,8 +9,8 @@ services:
         type: tmpfs
         target: /app/api
     environment:
-      - SERVICE_FQDN_NETALERTX_20211
+      - SERVICE_URL_NETALERTX_20211
       - TZ=America/Santo_Domingo
       - PORT=20211
     labels:
-      - 'traefik.http.middlewares.metube.basicauth.users=<user>:<pass>'
+      - traefik.http.middlewares.authelia@file
