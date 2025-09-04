@@ -1,0 +1,12 @@
+services:
+  esphome:
+    image: ghcr.io/esphome/esphome:latest
+    volumes:
+      - esp_config:/config
+      - /etc/localtime:/etc/localtime:ro
+    privileged: true
+    network_mode: host
+    environment:
+      - SERVICE_URL_ESPHOME_6052
+      - USERNAME=${SERVICE_USER_ADMIN}
+      - PASSWORD=${SERVICE_PASSWORD_ADMIN}
