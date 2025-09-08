@@ -1,10 +1,5 @@
 http:
   middlewares:
-    auth:
-      basicAuth:
-        users:
-          - '___user:pass'
-
     redirect-to-https:
       redirectScheme:
         scheme: https
@@ -26,6 +21,6 @@ http:
       tls:
         certResolver: letsencrypt
       middlewares:
-        - auth
+        - authelia@file
 
 # https://coolify.io/docs/knowledge-base/proxy/traefik/dashboard
