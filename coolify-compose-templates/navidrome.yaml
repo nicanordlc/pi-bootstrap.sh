@@ -8,5 +8,5 @@ services:
       - ND_PROMETHEUS_ENABLED=true
       - ND_PROMETHEUS_METRICSPATH=${METRICS_PATH:-/metrics___secret}
     volumes:
-      - ./data:/data
-      - /mnt/disk/<disk-uuid>/music:/music:ro
+      - navidrome-data:/data
+      - ___disk_path_music:/music:ro

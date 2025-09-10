@@ -2,7 +2,7 @@ services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
     volumes:
-      - ./config:/config
+      - homeassistant-config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro

@@ -24,7 +24,7 @@ services:
       - JWT_SECRET=${SERVICE_PASSWORD_64_JWT}
       - POLICY=${POLICY:-two_factor}
     volumes:
-      - ./config:/config
+      - authelia-config:/config
     entrypoint:
       - /bin/sh
       - -c

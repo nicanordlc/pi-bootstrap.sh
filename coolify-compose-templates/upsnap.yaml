@@ -6,4 +6,4 @@ services:
     environment:
       - SERVICE_URL_UPSNAP_8090
     volumes:
-      - ./data:/app/pb_data
+      - upsnap-data:/app/pb_data

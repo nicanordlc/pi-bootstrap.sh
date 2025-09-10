@@ -2,7 +2,7 @@ services:
   matrix:
     image: matrixdotorg/synapse:latest
     volumes:
-      - ./data:/data
+      - matrix-data:/data
     environment:
       - SERVICE_URL_MATRIX_8008
       - SYNAPSE_SERVER_NAME=${SERVICE_FQDN_MATRIX}

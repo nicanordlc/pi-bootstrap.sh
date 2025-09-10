@@ -6,5 +6,5 @@ services:
       - CHECK_FREQUENCY=240
       - PASSWORD=${SERVICE_PASSWORD_ADMIN} # user: podgrab
     volumes:
-      - ./config:/config
-      - ./data:/assets
+      - podgrab-config:/config
+      - podgrab-data:/assets

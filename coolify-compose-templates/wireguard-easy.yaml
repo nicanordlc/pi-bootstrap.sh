@@ -10,7 +10,7 @@ services:
       - LANG=${LANG:-en}
       - WG_PASSWORD=${SERVICE_PASSWORD_ADMIN}
     volumes:
-      - ./wireguard:/etc/wireguard
+      - wireguard-data:/etc/wireguard
     ports:
       - 51820:51820/udp
     cap_add:
