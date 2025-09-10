@@ -3,12 +3,12 @@ services:
     image: ghcr.io/wg-easy/wg-easy:latest
     environment:
       - SERVICE_URL_WGEASY_51821
-      - WG_HOST=${SERVICE_FQDN_WGEASY}
+      - WG_HOST=${SERVICE_URL_WGEASY}
       - WG_PORT=51820
       - WG_ALLOWED_IPS=${ALLOWED_IPS:-0.0.0.0/0, ::/0, 10.0.0.0/24}
       - WG_DEFAULT_DNS=${DEFAULT_DNS:-1.1.1.1}
       - LANG=${LANG:-en}
-      - _PASSWORD=${SERVICE_PASSWORD_ADMIN}
+      - WG_PASSWORD=${SERVICE_PASSWORD_ADMIN}
     volumes:
       - ./wireguard:/etc/wireguard
     ports:
@@ -23,5 +23,5 @@ services:
       - /bin/bash
       - -c
       - |
-        eval "wgpw '${SERVICE_PASSWORD_ADMIN}' > /pass-hash"
+        eval "wgpw '${WG_PASSWORD}' > /pass-hash"
         eval "$(cat /pass-hash) dumb-init node server.js"

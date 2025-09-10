@@ -10,9 +10,9 @@ services:
       - ENABLE_REGISTRATION=${ENABLE_REGISTRATION}
       - RECAPTCHA_PUBLIC_KEY=${RECAPTCHA_PUBLIC_KEY}
       - RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}
-      - _SERVER_NAME=${SERVICE_FQDN_MATRIX}
-      - _ADMIN_NAME=${SERVICE_USER_ADMIN}
-      - _ADMIN_PASS=${SERVICE_PASSWORD_ADMIN}
+      - SERVER_NAME=${SERVICE_FQDN_MATRIX}
+      - ADMIN_NAME=${SERVICE_USER_ADMIN}
+      - ADMIN_PASS=${SERVICE_PASSWORD_ADMIN}
     entrypoint:
       - /bin/bash
       - -c
@@ -37,7 +37,7 @@ services:
         #                        #
         ##########################
         cat <<EOF > /data/homeserver.yaml
-        server_name: "${SERVICE_FQDN_MATRIX}"
+        server_name: "${SERVER_NAME}"
         pid_file: /data/homeserver.pid
 
         # server
@@ -57,7 +57,7 @@ services:
             database: /data/homeserver.db
 
         # general
-        log_config: "/data/${SERVICE_FQDN_MATRIX}.log.config"
+        log_config: "/data/${SERVER_NAME}.log.config"
         media_store_path: /data/media_store
         report_stats: false
 
@@ -65,11 +65,11 @@ services:
         registration_shared_secret: $(<./registration_shared_secret)
         macaroon_secret_key: $(<./macaroon_secret_key)
         form_secret: $(<./form_secret)
-        signing_key_path: "/data/${SERVICE_FQDN_MATRIX}.signing.key"
+        signing_key_path: "/data/${SERVER_NAME}.signing.key"
 
         #rooms
         auto_join_rooms:
-          - "#general:${SERVICE_FQDN_MATRIX}"
+          - "#general:${SERVER_NAME}"
 
         # federation
         trusted_key_servers:
@@ -106,8 +106,8 @@ services:
           done
           register_new_matrix_user \
             -a \
-            -u ${SERVICE_USER_ADMIN} \
-            -p ${SERVICE_PASSWORD_ADMIN} \
+            -u ${ADMIN_NAME} \
+            -p ${ADMIN_PASS} \
             -c /data/homeserver.yaml \
             http://localhost:8008 &>/dev/null
         }
