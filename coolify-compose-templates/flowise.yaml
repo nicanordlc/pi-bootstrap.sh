@@ -1,0 +1,31 @@
+services:
+  flowise:
+    image: flowiseai/flowise:latest
+    volumes:
+      - flowise-data:/root/.flowise
+    environment:
+      - SERVICE_URL_FLOWISE_3000
+      - PORT=${PORT:-3000}
+      # DATABASE
+      - DATABASE_PATH=${DATABASE_PATH:-/root/.flowise}
+      # SECRET KEYS
+      - SECRETKEY_PATH=${SECRETKEY_PATH:-/root/.flowise}
+      # LOGGING
+      - LOG_PATH=${LOG_PATH:-/root/.flowise/logs}
+      # STORAGE
+      - BLOB_STORAGE_PATH=${BLOB_STORAGE_PATH:-/root/.flowise/storage}
+      # AUTH PARAMETERS
+      - JWT_AUTH_TOKEN_SECRET=${SERVICE_PASSWORD_JWT_SECRET}
+      - JWT_REFRESH_TOKEN_SECRET=${SERVICE_PASSWORD_JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER:-ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE:-AUDIENCE}
+      - JWT_TOKEN_EXPIRY_IN_MINUTES=${JWT_TOKEN_EXPIRY_IN_MINUTES:-360}
+      - JWT_REFRESH_TOKEN_EXPIRY_IN_MINUTES=${JWT_REFRESH_TOKEN_EXPIRY_IN_MINUTES:-43200}
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:${PORT}/api/v1/ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    entrypoint: /bin/sh -c "sleep 3; flowise start"
+
