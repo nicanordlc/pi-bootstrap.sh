@@ -110,15 +110,6 @@ services:
         EOF
         fi
 
-        SMTP_FROM_NAME={{team.SMTP_FROM_NAME}}
-        SMTP_FROM_ADDRESS={{team.SMTP_FROM_ADDRESS}}
-
-        SMTP_USERNAME={{team.SMTP_USERNAME}}
-        SMTP_PASSWORD={{team.SMTP_PASSWORD}}
-
-        SMTP_HOST={{team.SMTP_HOST}}
-        SMTP_PORT={{team.SMTP_PORT}}
-
         cat <<EOF >>/config/configuration.yml
         ...
         EOF
