@@ -22,6 +22,7 @@ services:
       - USERNAME=${SERVICE_USER_ADMIN}
       - PASSWORD=${SERVICE_PASSWORD_ADMIN}
       - JWT_SECRET=${SERVICE_PASSWORD_64_JWT}
+      - STORAGE_SECRET=${SERVICE_PASSWORD_64_STORAGE}
       - POLICY=${POLICY:-two_factor}
     volumes:
       - authelia-config:/config
@@ -81,7 +82,7 @@ services:
           ban_time: '5 minutes'
 
         storage:
-          encryption_key: 'you_must_generate_a_random_string_of_more_than_twenty_chars_and_configure_this'
+          encryption_key: '${STORAGE_SECRET}'
           local:
             path: '/config/db.sqlite3'
 
