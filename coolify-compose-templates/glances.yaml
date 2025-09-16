@@ -1,0 +1,21 @@
+services:
+  glances:
+    image: nicolargo/glances:latest
+    environment:
+      - GLANCES_OPT=-w
+      - SERVICE_URL_GLANCES_61208
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    pid: host
+    privileged: true
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://localhost:61208'
+      interval: 2s
+      timeout: 10s
+      retries: 30
+    labels:
+      - traefik.http.middlewares.authelia@file
