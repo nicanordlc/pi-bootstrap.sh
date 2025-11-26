@@ -8,15 +8,8 @@ services:
     cap_add:
       - SYS_ADMIN
     ports:
-      - 111:111/tcp
       - 2049:2049/tcp
-      - 32765:32765/tcp
-      - 32767:32767/tcp
-
-      - 111:111/udp
       - 2049:2049/udp
-      - 32765:32765/udp
-      - 32767:32767/udp
 
 # TODO: maybe add samba: https://github.com/dperson/samba
 # https://github.com/dperson/samba/blob/master/docker-compose.yml
