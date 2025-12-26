@@ -39,6 +39,7 @@ services:
       - '--providers.file.watch=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
+      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=0'
       - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
       - '--api.insecure=false'
       - '--providers.docker=true'

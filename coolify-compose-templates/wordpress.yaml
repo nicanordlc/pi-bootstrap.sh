@@ -1,0 +1,55 @@
+services:
+  wordpress:
+    image: wordpress:latest
+    volumes:
+      - wordpress-files:/var/www/html
+    environment:
+      - SERVICE_URL_WORDPRESS
+      - DB_NAME=${DB_NAME:-wordpress}
+
+      - WORDPRESS_DB_HOST=mariadb
+      - WORDPRESS_DB_USER=${SERVICE_USER_DB}
+      - WORDPRESS_DB_PASSWORD=${SERVICE_PASSWORD_DB}
+      - WORDPRESS_DB_NAME=${DB_NAME}
+    depends_on:
+      - mariadb
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://127.0.0.1'
+      interval: 2s
+      timeout: 10s
+      retries: 10
+
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=${SERVICE_PASSWORD_ROOT}
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${SERVICE_USER_DB}
+      - MARIADB_PASSWORD=${SERVICE_PASSWORD_DB}
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - '-h'
+        - 127.0.0.1
+      interval: 5s
+      timeout: 20s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      - SERVICE_URL_DDWORDPRESS
+
+      - PMA_HOST=mariadb
+      - PMA_USER=${SERVICE_USER_DB}
+      - PMA_PASSWORD=${SERVICE_PASSWORD_DB}
+    labels:
+      - traefik.http.middlewares.authelia@file
