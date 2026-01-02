@@ -1,11 +1,10 @@
-name: coolify-proxy
 networks:
   coolify:
     external: true
 services:
   traefik:
     container_name: coolify-proxy
-    image: 'traefik:v3.6.1'
+    image: 'traefik:v3.6'
     restart: unless-stopped
     extra_hosts:
       - 'host.docker.internal:host-gateway'
@@ -23,7 +22,7 @@ services:
       retries: 5
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
-      - '/data/coolify/proxy/:/traefik'
+      - '/data/coolify/proxy:/traefik'
     command:
       - '--ping=true'
       - '--ping.entrypoint=http'
@@ -31,23 +30,26 @@ services:
       - '--entrypoints.http.address=:80'
       - '--entrypoints.https.address=:443'
       - '--entrypoints.http.http.encodequerysemicolons=true'
-      - '--entryPoints.http.http2.maxConcurrentStreams=250'
+      - '--entryPoints.http.http2.maxConcurrentStreams=50'
       - '--entrypoints.https.http.encodequerysemicolons=true'
-      - '--entryPoints.https.http2.maxConcurrentStreams=250'
+      - '--entryPoints.https.http2.maxConcurrentStreams=50'
       - '--entrypoints.https.http3'
       - '--providers.file.directory=/traefik/dynamic/'
+      - '--providers.docker.exposedbydefault=false'
       - '--providers.file.watch=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http'
-      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=0'
       - '--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json'
       - '--api.insecure=false'
       - '--providers.docker=true'
-      - '--providers.docker.exposedbydefault=false'
       - '--metrics.prometheus=true'
       - '--metrics.prometheus.buckets=0.1,0.3,1.2,5.0'
       - '--metrics.prometheus.addrouterslabels=true'
       - '--metrics.prometheus.addserviceslabels=true'
+      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=duckdns'
+      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=0'
+    environment:
+      - DUCKDNS_TOKEN=___TOKEN_DUCKDNS
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.entrypoints=http
